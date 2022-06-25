@@ -1,6 +1,6 @@
-import { acquireReading, baseRate } from './6-10.js';
+import { BookStore } from "./6-10.js";
 
-const aReading = acquireReading();
+const aReading = new BookStore("ivan", 10, 5, 2017);
 
-const baseCharge = baseRate(aReading.month, aReading.year) * aReading.quantity;
+const baseCharge = aReading.baseRate() * aReading.quantity;
 console.log(baseCharge);
