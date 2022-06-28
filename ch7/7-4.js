@@ -10,10 +10,13 @@ class Order {
     return this.#quantity * this.#item;
   }
 
-  get price() {
+  get discountFactor() {
     let discountFactor = 0.98;
-    this.basePrice > 1000 ? discountFactor : discountFactor - 0.03;
-    return this.basePrice * discountFactor;
+    return this.basePrice > 1000 ? discountFactor : discountFactor - 0.03;
+  }
+
+  get price() {
+    return this.basePrice * this.discountFactor;
   }
 }
 
