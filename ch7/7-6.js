@@ -1,3 +1,4 @@
+// 밀접하게 연관된 정보들은 응집해놓는다.
 export class TrackingInformation {
   #shippingCompany;
   #trackingNumber;
@@ -28,26 +29,36 @@ export class TrackingInformation {
 }
 
 export class Shipment {
-  #trackingInformation;
-  constructor(trackingInformation) {
-    this.#trackingInformation = trackingInformation;
+  #shippingCompany;
+  #trackingNumber;
+  constructor(trackingNumber, shippingCompany) {
+    this.#trackingNumber = trackingNumber;
+    this.#shippingCompany = shippingCompany;
+  }
+
+  get shippingCompany() {
+    return this.#shippingCompany;
+  }
+
+  set shippingCompany(arg) {
+    this.#shippingCompany = arg;
+  }
+
+  get trackingNumber() {
+    return this.#trackingNumber;
+  }
+
+  set trackingNumber(arg) {
+    this.#trackingNumber = arg;
   }
 
   get trackingInfo() {
-    return this.#trackingInformation.display;
-  }
-
-  get trackingInformation() {
-    return this.#trackingInformation;
-  }
-
-  set trackingInformation(trackingInformation) {
-    this.#trackingInformation = trackingInformation;
+    return `${this.shippingCompany}: ${this.trackingNumber}`;
   }
 }
 
-const shipment = new Shipment(new TrackingInformation(999, 'Maersk'));
+const shipment = new Shipment(999, "Maersk");
 console.log(shipment.trackingInfo);
 
-shipment.trackingInformation.shippingCompany = 'COSCO';
+shipment.shippingCompany = "COSCO";
 console.log(shipment.trackingInfo);
