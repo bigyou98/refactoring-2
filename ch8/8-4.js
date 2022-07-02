@@ -1,4 +1,4 @@
-// 8.5 문장을 호출한 곳으로 옮기기
+// 8.4 문장을 호출한 곳으로 옮기기
 
 function renderPerson(outStream, person) {
   outStream.write(`<p>${person.name}</p>\n`);
