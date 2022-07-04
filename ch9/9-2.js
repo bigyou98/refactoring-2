@@ -1,22 +1,26 @@
+// 필드 이름 바꾸기
+// 정확하고 값을 잘 나타낼 수 있는 이름으로 지어라.
 class Organization {
+  #title;
+  #country;
   constructor(data) {
-    this._name = data.name;
-    this._country = data.country;
+    this.#title = data.title;
+    this.#country = data.country;
   }
-  get name() {
-    return this._name;
+  get title() {
+    return this.#title;
   }
-  set name(value) {
-    this._name = value;
+  set title(value) {
+    this.#title = value;
   }
   get country() {
-    return this._country;
+    return this.#country;
   }
   set country(value) {
-    this._country = value;
+    this.#country = value;
   }
 }
 const organization = new Organization({
-  name: '드림코딩',
-  country: '대한민국',
+  title: "박상훈 팬클럽",
+  country: "대한민국",
 });
