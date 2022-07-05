@@ -37,4 +37,8 @@
       : quantity * plan.regularRate + plan.regularServiceCharge);
   }
   ```
+
 - if문의 내용이 1줄이어도 { }를 통해서 나타내자. 중첩된 if문이라면 가독성이 매우 떨어지기 때문이다.
+
+인상 깊었던 챕터
+10-2.js
