@@ -42,11 +42,29 @@
 - 중첩 조건문은 보기도 어렵고 더러워지고 유지보수하기도 어렵다
 - 함수가 빨리 종료될 수 있도록 if-else로 나누는 게 아닌 쉽게 결과가 도출될 수 있는 부분을 앞에 배치한다.
 
+  ```js
+  export function adjustedCapital(instrument) {
+    if (!isEligibleForAdjustCapital(instrument)) {
+      return 0;
+    }
+    return (
+      (instrument.income / instrument.duration) * anInstrument.adjustmentFactor
+    );
+  }
+  function isEligibleForAdjustCapital(instrument) {
+    return (
+      instrument.capital > 0 &&
+      instrument.interestRate > 0 &&
+      instrument.duration > 0
+    );
+  }
+  ```
+
 ## 인상 깊었던 챕터
 
 > 조건식 통합하기
 
-- 10-2.js  
+- 10-2.js
 
 > 중첩 조건문을 보호 구문으로 바꾸기
 
