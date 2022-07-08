@@ -5,6 +5,7 @@ export function score(candidate, medicalExam, scoringGuide) {
   return new Scorer(candidate, medicalExam, scoringGuide).execute();
 }
 
+// 커맨드 패턴이라고 한다.
 export class ScoringGuide {
   stateWithLowCertification(state) {
     return state < 5;
