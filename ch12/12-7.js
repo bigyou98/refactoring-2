@@ -1,53 +1,36 @@
+// 서브 클래스 제거하기
+// 단순히 type만 다른데 상속을 해서 서브 클래스를 만드는 것은 과하다.
+
 class Person {
   #name;
-  constructor(name) {
+  #genderCode;
+
+  constructor(name, genderCode) {
     this.#name = name;
+    this.#genderCode = genderCode;
   }
 
   get name() {
     return this.#name;
   }
 
-  get genderCode() {
-    return 'X';
+  get gender() {
+    return this.#genderCode;
   }
-}
 
-class Male extends Person {
-  get genderCode() {
-    return 'M';
-  }
-}
-
-class Female extends Person {
-  get genderCode() {
-    return 'F';
-  }
-}
-
-function loadFromInput(data) {
-  const result = [];
-  data.forEach((record) => {
-    let person;
-    switch (record.gender) {
-      case 'M':
-        person = new Male(record.name);
-        break;
-      case 'F':
-        person = new Female(record.name);
-        break;
+  // 생성자를 만들어두기
+  static create(record) {
+    switch (record.genderCode) {
+      case "M":
+        return new Person(record.name, "M");
+      case "F":
+        return new Person(record.name, "F");
       default:
-        person = new Person(record.name);
+        return new Person(record.name, "X");
     }
-    result.push(person);
-  });
-  return result;
-}
+  }
 
-const people = loadFromInput([
-  { name: '엘리', gender: 'F' },
-  { name: '철수', gender: 'M' },
-  { name: '밥', gender: 'M' },
-]);
-const numberOfMales = people.filter((p) => p instanceof Male).length;
-console.log(numberOfMales);
+  get isMale() {
+    return this.#genderCode === "M";
+  }
+}
