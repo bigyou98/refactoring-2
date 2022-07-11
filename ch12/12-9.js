@@ -1,3 +1,4 @@
-class Employee {}
+// 계층 합치기
+// 계층을 나눌 필요가 없을 정도로 동일한 기능이기에 합친다!
 
-class Salesperson extends Employee {}
+class Employee {}
