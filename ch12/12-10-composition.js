@@ -5,8 +5,8 @@
 
 class Printer {
   #printerHeader;
-  constructor(printDelegate) {
-    this.#printerHeader = printDelegate;
+  constructor(printerHeader) {
+    this.#printerHeader = printerHeader;
   }
   print() {
     this.#printerHeader
@@ -23,7 +23,7 @@ class RedPrinterHeader {
 
 class BlackPrinterHeader {
   print() {
-    console.log("빨간 출력!");
+    console.log("검정 출력!");
   }
 }
 
