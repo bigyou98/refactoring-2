@@ -1,72 +1,111 @@
-export function statement(invoice, plays) {
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+function usd(number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 2,
-  }).format;
+  }).format(number);
+}
 
-  for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
-    let thisAmount = 0;
+export function statement(invoice, plays) {
+  const statement = {};
+  statement.customer = invoice.customer;
+  statement.performances = invoice.performances.map(enrichPerformance);
+  statement.totalAmount = totalAmount(statement.performances);
+  statement.totalCredits = totalCredits(statement.performances);
 
-    switch (play.type) {
-      case 'tragedy': // 비극
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
+  // 기존의 data에서 추가로 필요한 data들을 넣어서 풍부한 data를 만들어 1번에 처리함!
+  function enrichPerformance(performance) {
+    const result = { ...performance };
+    result.play = playFor(performance);
+    result.amount = amountFor(result);
+    result.credits = creditsFor(result);
+    return result;
+  }
+
+  function playFor(performance) {
+    return plays[performance.playID];
+  }
+
+  function amountFor(performance) {
+    let result = 0;
+
+    switch (performance.play.type) {
+      case "tragedy": // 비극
+        result = 40000;
+        if (performance.audience > 30) {
+          result += 1000 * (performance.audience - 30);
         }
         break;
-      case 'comedy': // 희극
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
+      case "comedy": // 희극
+        result = 30000;
+        if (performance.audience > 20) {
+          result += 10000 + 500 * (performance.audience - 20);
         }
-        thisAmount += 300 * perf.audience;
+        result += 300 * performance.audience;
         break;
       default:
-        throw new Error(`알 수 없는 장르: ${play.type}`);
+        throw new Error(`알 수 없는 장르: ${performance.play.type}`);
     }
+    return result;
+  }
 
-    // 포인트를 적립한다.
-    volumeCredits += Math.max(perf.audience - 30, 0);
+  function creditsFor(performance) {
+    let result = 0;
+    result += Math.max(performance.audience - 30, 0);
+
     // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ("comedy" === performance.play.type)
+      result += Math.floor(performance.audience / 5);
 
-    // 청구 내역을 출력한다.
-    result += `  ${play.name}: ${format(thisAmount / 100)} (${
+    return result;
+  }
+
+  function totalAmount(performances) {
+    return performances.reduce((sum, cur) => sum + cur.amount, 0);
+  }
+
+  function totalCredits(performances) {
+    return performances.reduce((sum, cur) => sum + cur.credits, 0);
+  }
+
+  return renderPlainText(statement, plays);
+}
+
+export function renderPlainText(statement) {
+  let result = `청구 내역 (고객명: ${statement.customer})\n`;
+
+  for (let perf of statement.performances) {
+    result += `  ${perf.play.name}: ${usd(perf.amount / 100)} (${
       perf.audience
     }석)\n`;
-    totalAmount += thisAmount;
   }
-  result += `총액: ${format(totalAmount / 100)}\n`;
-  result += `적립 포인트: ${volumeCredits}점\n`;
+
+  result += `총액: ${usd(statement.totalAmount / 100)}\n`;
+  result += `적립 포인트: ${statement.totalCredits}점\n`;
   return result;
 }
 
 // 사용예:
 const playsJSON = {
-  hamlet: { name: 'Hamlet', type: 'tragedy' },
-  'as-like': { name: 'As You Like It', type: 'comedy' },
-  othello: { name: 'Othello', type: 'tragedy' },
+  hamlet: { name: "Hamlet", type: "tragedy" },
+  "as-like": { name: "As You Like It", type: "comedy" },
+  othello: { name: "Othello", type: "tragedy" },
 };
 
 const invoicesJSON = [
   {
-    customer: 'BigCo',
+    customer: "BigCo",
     performances: [
       {
-        playID: 'hamlet',
+        playID: "hamlet",
         audience: 55,
       },
       {
-        playID: 'as-like',
+        playID: "as-like",
         audience: 35,
       },
       {
-        playID: 'othello',
+        playID: "othello",
         audience: 40,
       },
     ],
@@ -75,11 +114,11 @@ const invoicesJSON = [
 
 const result = statement(invoicesJSON[0], playsJSON);
 const expected =
-  '청구 내역 (고객명: BigCo)\n' +
-  '  Hamlet: $650.00 (55석)\n' +
-  '  As You Like It: $580.00 (35석)\n' +
-  '  Othello: $500.00 (40석)\n' +
-  '총액: $1,730.00\n' +
-  '적립 포인트: 47점\n';
+  "청구 내역 (고객명: BigCo)\n" +
+  "  Hamlet: $650.00 (55석)\n" +
+  "  As You Like It: $580.00 (35석)\n" +
+  "  Othello: $500.00 (40석)\n" +
+  "총액: $1,730.00\n" +
+  "적립 포인트: 47점\n";
 console.log(result);
 console.log(result === expected);
