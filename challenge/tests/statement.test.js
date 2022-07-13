@@ -1,4 +1,4 @@
-import { statement, htmlStatement } from "../statement.js";
+import { htmlStatement, statement } from "../statement.js";
 
 describe("statement", () => {
   const playsJSON = {
